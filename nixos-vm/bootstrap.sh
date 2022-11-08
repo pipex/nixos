@@ -10,10 +10,10 @@ DEBUG="${DEBUG:-1}"
 
 # Default arguments
 qemu="${qemu:-/usr/local}"
-iso="${iso:-./nixos-minimal-aarch64.iso}"
+iso="${src:-./nixos-minimal-aarch64.iso}"
 imgSize="${imgSize:-64G}"
 
-mkdir -o $out 2>/dev/null || out="."
+mkdir -p $out 2>/dev/null || out="."
 
 nixos_iso_dl() {
 	iso="${1:-./nixos-minimal-aarch64.iso}"
