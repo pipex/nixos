@@ -53,8 +53,9 @@ sudo -- sh -c "\
   		services.openssh.enable = true;\n \
 			services.openssh.passwordAuthentication = false;\n \
 			services.openssh.permitRootLogin = \"no\";\n \
+			users.users.root.initialPassword = \"root\";\n \
 		' /mnt/etc/nixos/configuration.nix; \
-		nixos-install --no-root-passwd
+		nixos-install
 		"
 
 confirm "Install ready. Reboot?" && sudo reboot
