@@ -35,7 +35,7 @@ sudo qemu-system-aarch64 -machine virt,highmem=off \
 Inside the image, run the bootstrap script. Answer yes to the prompts.
 
 ```
-curl -sL https://raw.githubusercontent.com/pipex/nixos/main/bootstrap.sh
+curl -sO https://raw.githubusercontent.com/pipex/nixos/main/bootstrap.sh
 sh bootstrap.sh
 ```
 
