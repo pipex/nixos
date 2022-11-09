@@ -17,3 +17,5 @@ Once that is ready
 nixos-vm create --flake github:pipex/nixos#qemu-aarch64 default
 nixos-vm start
 ```
+
+Use environment variable `DEBUG=1` to track progress.
