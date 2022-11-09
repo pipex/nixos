@@ -1,14 +1,6 @@
 { config, pkgs, lib, ... }:
 
 {
-  # Home Manager needs a bit of information about you and the
-  # paths it should manage.
-  home.username = "flalanne";
-  home.homeDirectory = "/Users/flalanne";
-  home.sessionVariables = {
-    # SWEET_HOME_SHELL = "zsh";
-  };
-
   # Packages to install
   home.packages = [
     # pkgs is the set of all packages in the default home.nix implementation
@@ -25,7 +17,6 @@
     pkgs.nixpkgs-fmt
     pkgs.jq
     pkgs.mosh
-    pkgs.bash
     pkgs.libiconv # needed for rnix
     pkgs.pkg-config
   ];
@@ -151,7 +142,4 @@
   # the Home Manager release notes for a list of state version
   # changes in each release.
   home.stateVersion = "22.05";
-
-  # Let Home Manager install and manage itself.
-  programs.home-manager.enable = true;
 }

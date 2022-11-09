@@ -19,7 +19,7 @@
       nixosConfigurations.qemu-aarch64 = mkSystem "qemu-aarch64" {
         inherit nixpkgs home-manager;
         system = "aarch64-linux";
-        user = "pipex";
+        user = "flalanne";
         hostname = "vesta";
       };
     };
