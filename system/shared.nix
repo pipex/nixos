@@ -9,7 +9,7 @@
     "console=tty1"
   ];
 
-  systemd.services."serial-getty@ttyS0" = {
+  systemd.services."serial-getty@ttyAMA0" = {
     enable = true;
     wantedBy = [ "getty.target" ]; # to start at boot
     serviceConfig.Restart = "always"; # restart when session is closed
