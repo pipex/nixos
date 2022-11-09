@@ -47,7 +47,7 @@
     fontDir.enable = true;
 
     fonts = with pkgs; [
-      (nerdfonts.override { fonts = [ "SauceCodePro" ]; })
+      (nerdfonts.override { fonts = [ "SourceCodePro" ]; })
     ];
   };
 
