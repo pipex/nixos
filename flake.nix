@@ -12,26 +12,15 @@
 
   outputs = { self, nixpkgs, home-manager }:
     let
-      system = "aarch64-linux";
-      pkgs = nixpkgs.legacyPackages.${system};
-      hostname = "vesta";
+      mkSystem = import ./lib/mksystem.nix;
+
     in
     {
-      formatter.${system} = pkgs.nixpkgs-fmt;
-      defaultPackage.aarch64-linux = home-manager.defaultPackage.aarch64-linux;
-      nixosConfigurations.${hostname} = nixpkgs.lib.nixosSystem {
-        inherit system;
-        modules = [ ./nixos/configuration.nix ];
-      };
-
-      homeConfigurations.${hostname} = home-manager.lib.homeManagerConfiguration {
-        inherit pkgs;
-
-        modules = [
-          ./home.nix
-        ];
+      nixosConfigurations.qemu-aarch64 = mkSystem "qemu-aarch64" {
+        inherit nixpkgs home-manager;
+        system = "aarch64-linux";
+        user = "pipex";
+        hostname = "vesta";
       };
     };
-
-
 }
