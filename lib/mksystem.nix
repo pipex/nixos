@@ -11,7 +11,7 @@ nixpkgs.lib.nixosSystem rec {
     ../users/${user}/nixos.nix
     {
       # Replace the hostname by the user input
-      networking.hostname = hostname;
+      networking.hostName = hostname;
     }
     home-manager.nixosModules.home-manager
     {
