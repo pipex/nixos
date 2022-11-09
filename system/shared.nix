@@ -4,6 +4,11 @@
   # Be careful updating this.
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
+  boot.kernelParams = [
+    "console=ttyS0,115200"
+    "console=tty1"
+  ];
+
   nix = {
     # use unstable nix so we can access flakes
     package = pkgs.nixUnstable;
