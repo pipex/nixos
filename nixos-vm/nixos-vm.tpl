@@ -1,4 +1,5 @@
 #!/bin/sh
+# vim: filetype=sh
 
 set -e
 
@@ -10,7 +11,7 @@ XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
 # Additional environment
 PATH="${qemu}/bin:$PATH"
 TMPDIR="${TMPDIR:-/tmp}"
-DEBUG="${DEBUG:-1}"
+DEBUG="${DEBUG:-0}"
 
 # Home for nixos images
 NIXOS_VM_HOME="$XDG_STATE_HOME/nixos-vm"
@@ -150,7 +151,7 @@ create() {
 	wait $qemu_pid
 }
 
-run() {
+start() {
 	iface="en0"
 	while :; do
 		case $1 in
@@ -204,14 +205,16 @@ destroy() {
 }
 
 # Parse command
+[ -z "$1" ] && echo "Error: No command given" >&2 && exit 1
+
 case $1 in
 create)
 	shift
 	create "$@"
 	;;
-run)
+start)
 	shift
-	run "$@"
+	start "$@"
 	;;
 destroy)
 	shift
