@@ -4,16 +4,11 @@
   # Be careful updating this.
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
+  # Do not show boot progress on main console
   boot.kernelParams = [
     "console=ttyS0,115200"
     "console=tty1"
   ];
-
-  systemd.services."serial-getty@ttyAMA0" = {
-    enable = true;
-    wantedBy = [ "getty.target" ]; # to start at boot
-    serviceConfig.Restart = "always"; # restart when session is closed
-  };
 
   nix = {
     # use unstable nix so we can access flakes
