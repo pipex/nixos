@@ -46,6 +46,17 @@ create() {
 			shift
 			break
 			;;
+		-f | --flake) # Takes an option argument, ensuring it has been specified.
+			if [ -n "$2" ]; then
+				flake=$2
+				shift
+			else
+				echo "Error: '--flake' requires a non-empty option argument." >&2
+				exit 1
+			fi
+			shift
+			break
+			;;
 		-?*)
 			printf "Warn: Ignoring unrecognized argument argument %s." "$1" >&2
 			shift
@@ -71,8 +82,11 @@ create() {
 	qemu-img create -f qcow2 "$img" "$imgSize" >/dev/null
 
 	# Create named pipes to talk to the guest
-	[ ! -p "$TMPDIR/guest.in" ] && mkfifo "$TMPDIR/guest.in"
-	[ ! -p "$TMPDIR/guest.out" ] && mkfifo "$TMPDIR/guest.out"
+	[ -p "$TMPDIR/guest.in" ] && rm "$TMPDIR/guest.in"
+	[ -p "$TMPDIR/guest.out" ] && rm "$TMPDIR/guest.out"
+
+	mkfifo "$TMPDIR/guest.in"
+	mkfifo "$TMPDIR/guest.out"
 
 	echo "Starting VM for bootstraping" >&2
 	qemu-system-aarch64 -machine virt,highmem=off \
@@ -109,6 +123,13 @@ create() {
 	    services.mingetty.autologinUser = \\"root\\";\\n \
 	  '
 
+	shutdown="shutdown now"
+	msg="Shutting down..."
+	if [ -n "$flake" ]; then
+		shutdown="reboot"
+		msg="Rebooting..."
+	fi
+
 	# partition drive
 	echo "Partitioning virtual drive" >&2
 	printf "sudo -- sh -c \" \
@@ -130,23 +151,43 @@ create() {
  			$configuration \
  		' /mnt/etc/nixos/configuration.nix; \
  		nixos-install --no-root-passwd; \
- 		reboot \
+ 		$shutdown \
  		\"\n" >"$TMPDIR/guest.in"
 
 	# kill cat
-	[ -n "$cat_pid" ] && kill -9 $cat_pid >/dev/null 2>&1
+	[ -n "$cat_pid" ] && kill $cat_pid 2>/dev/null && (wait $cat_pid 2>/dev/null || true)
 
-	# wait for reboot
+	# wait for install to finish
 	while read -r line; do
 		[ "$DEBUG" = "1" ] && echo "$line"
 		# Wait for the login prompt
-		if [ -z "${line##nixos login:*}" ]; then
+		if [ -z "${line##installation finished!*}" ]; then
 			break
 		fi
 	done <"$TMPDIR/guest.out"
 
-	# TODO: setup using flake
-	printf "shutdown now\n" >"$TMPDIR/guest.in"
+	echo "Drive ready. $msg" >&2
+
+	# If there is a flake we need to wait for the reboot to
+	# run the configuration
+	if [ -n "$flake" ]; then
+
+		# wait for reboot
+		while read -r line; do
+			[ "$DEBUG" = "1" ] && echo "$line"
+			# Wait for the login prompt
+			if [ -z "${line##nixos login:*}" ]; then
+				break
+			fi
+		done <"$TMPDIR/guest.out"
+
+		# Setup using flake
+		echo "Running configuration from flake $flake" >&2
+
+		# This may take a while so let's print the progress
+		printf "nixos-rebuild switch --flake %s; shutdown now\n" "$flake" >"$TMPDIR/guest.in"
+		cat <"$TMPDIR/guest.out" &
+	fi
 
 	wait $qemu_pid
 }
@@ -184,11 +225,12 @@ start() {
 	# Check for the file before doing anything
 	[ ! -f "$img" ] && echo "Error: No virtual machine '$imgName' found.. Please run 'nixos-vm create $imgName'." >&2 && exit 1
 
-	qemu-system-aarch64 -machine virt,highmem=off \
-		-cpu host -accel hvf -smp 4 -m 2048 \
+	qemu-system-aarch64 -machine virt \
+		-cpu host -accel hvf -smp 4 -m 4096 \
 		-drive "file=$img,format=qcow2,if=virtio,unit=0" \
 		-drive "if=pflash,format=raw,unit=0,file=${qemu}/share/qemu/edk2-aarch64-code.fd,readonly=on" \
 		-net nic,model=virtio -net "vmnet-bridged,ifname=$iface" \
+		-device virtio-serial-pci \
 		-serial mon:stdio -nographic
 }
 
