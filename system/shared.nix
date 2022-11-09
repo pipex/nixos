@@ -9,11 +9,12 @@
     "console=tty1"
   ];
 
-  systemd.services."serial-getty@ttyAMA0" = {
+  systemd.services."serial-getty@ttyS0" = {
     enable = true;
     wantedBy = [ "getty.target" ]; # to start at boot
     serviceConfig.Restart = "always"; # restart when session is closed
   };
+  systemd.services."autovt@".enable = true;
 
   nix = {
     # use unstable nix so we can access flakes
