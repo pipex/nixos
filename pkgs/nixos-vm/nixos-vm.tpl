@@ -207,6 +207,11 @@ start() {
 			shift
 			break
 			;;
+		-d | --daemon) # Takes an option argument, ensuring it has been specified.
+			daemon=1
+			shift
+			break
+			;;
 		-?*)
 			echo "Error: Unrecognized argument %s." "$1" >&2
 			shift
@@ -225,13 +230,48 @@ start() {
 	# Check for the file before doing anything
 	[ ! -f "$img" ] && echo "Error: No virtual machine '$imgName' found.. Please run 'nixos-vm create $imgName'." >&2 && exit 1
 
-	qemu-system-aarch64 -machine virt \
-		-cpu host -accel hvf -smp 4 -m 4096 \
-		-drive "file=$img,format=qcow2,if=virtio,unit=0" \
-		-drive "if=pflash,format=raw,unit=0,file=${qemu}/share/qemu/edk2-aarch64-code.fd,readonly=on" \
-		-net nic,model=virtio -net "vmnet-bridged,ifname=$iface" \
-		-device virtio-serial-pci \
-		-serial mon:stdio -nographic
+	[ -f "$TMPDIR/nixos-vm-$imgName.pid" ] && echo "Error: file '$TMPDIR/nixos-vm-$imgName.pid' exists. Is there another instance running?" >&2 && exit 1
+
+	if [ -z "$daemon" ]; then
+		echo "Password is required to setup bridge networking" >&2
+		sudo qemu-system-aarch64 -machine virt \
+			-cpu host -accel hvf -smp 4 -m 4096 \
+			-drive "file=$img,format=qcow2,if=virtio,unit=0" \
+			-drive "if=pflash,format=raw,unit=0,file=${qemu}/share/qemu/edk2-aarch64-code.fd,readonly=on" \
+			-net nic,model=virtio -net "vmnet-bridged,ifname=$iface" \
+			-device virtio-serial-pci \
+			-serial mon:stdio -nographic &
+
+		qemu_pid=$!
+		echo $qemu_pid >"$TMPDIR/nixos-vm-$imgName.pid"
+		wait $qemu_pid
+		rm "$TMPDIR/nixos-vm-$imgName.pid"
+	else
+		# Create named pipes to talk to the guest
+		[ -p "$TMPDIR/$imgName.in" ] && rm "$TMPDIR/$imgName.in"
+		[ -p "$TMPDIR/$imgName.out" ] && rm "$TMPDIR/$imgName.out"
+
+		mkfifo "$TMPDIR/$imgName.in"
+		mkfifo "$TMPDIR/$imgName.out"
+
+		echo "Password may be required to setup bridge networking" >&2
+		sudo qemu-system-aarch64 -machine virt \
+			-cpu host -accel hvf -smp 4 -m 4096 \
+			-drive "file=$img,format=qcow2,if=virtio,unit=0" \
+			-drive "if=pflash,format=raw,unit=0,file=${qemu}/share/qemu/edk2-aarch64-code.fd,readonly=on" \
+			-net nic,model=virtio -net "vmnet-bridged,ifname=$iface" \
+			-device virtio-serial-pci \
+			-serial "pipe:$TMPDIR/$imgName" -monitor none -nographic &
+
+		while read -r line; do
+			[ "$DEBUG" = "1" ] && echo "$line"
+			# Wait for the login prompt
+			if [ -z "${line##*login:*}" ]; then
+				break
+			fi
+		done <"$TMPDIR/$imgName.out"
+		echo "Ready." >&2
+	fi
 }
 
 destroy() {
