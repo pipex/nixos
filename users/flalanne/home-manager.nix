@@ -17,9 +17,8 @@
     pkgs.shellcheck
     pkgs.rust-analyzer
     pkgs.nixpkgs-fmt
+    pkgs.rnix-lsp
     pkgs.jq
-    pkgs.libiconv # needed for rnix
-    pkgs.pkg-config
   ];
 
   # Install AstroVim
@@ -32,9 +31,9 @@
   };
   xdg.configFile."nvim/lua/user".source = pkgs.fetchFromGitHub {
     owner = "pipex";
-    repo = "astrovim";
-    rev = "736219d6caffde63aea44ee9802e28edbbec75eb";
-    sha256 = "1awq23rkfywi55hlvjl4srll6zans80rj4z58839x7ng27x5vrbf";
+    repo = "astronvim";
+    rev = "54d5f9a9dd1f9fa09c9a9171f0a66aa927bac21d";
+    sha256 = "0n5v2mdkwcv38lnzydxcgbk9i97jw1imldvwqdsqdqpw045z4sk1";
   };
   # xdg.configFile."nvim/lua/user".source = ./astronvim;
 
