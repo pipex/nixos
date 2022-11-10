@@ -13,9 +13,11 @@
     pkgs.openssh
     pkgs.lazygit
     pkgs.rustup
+    pkgs.shfmt
+    pkgs.shellcheck
+    pkgs.rust-analyzer
     pkgs.nixpkgs-fmt
     pkgs.jq
-    pkgs.mosh
     pkgs.libiconv # needed for rnix
     pkgs.pkg-config
   ];
@@ -25,8 +27,8 @@
   xdg.configFile."nvim".source = pkgs.fetchFromGitHub {
     owner = "AstroNvim";
     repo = "AstroNvim";
-    rev = "v2.4.2";
-    sha256 = "09550nxi2gxkkbfyr6p6lilpczqw5qk8pvqdg3fmb4l5ja2vs3dg";
+    rev = "v2.6.3";
+    sha256 = "11dyfilk4xh9m7zwm7c951l28h2ixqzmqdn86rngv0kl6yp5jzsp";
   };
   xdg.configFile."nvim/lua/user".source = pkgs.fetchFromGitHub {
     owner = "pipex";
