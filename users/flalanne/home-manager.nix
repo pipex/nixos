@@ -19,7 +19,9 @@
     pkgs.nixpkgs-fmt
     pkgs.rnix-lsp
     pkgs.jq
-    pkgs.reattach-to-user-namespace
+    pkgs.unzip
+    # TODO: check system before installing this
+    # pkgs.reattach-to-user-namespace
   ];
 
   # Install AstroVim
