@@ -96,7 +96,6 @@
     localVariables = {
       TZ = "America/Santiago";
       EDITOR = "nvim";
-      TERM = "xterm-256color";
     };
     history = {
       size = 10000;
