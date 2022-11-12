@@ -35,8 +35,8 @@
   xdg.configFile."nvim/lua/user".source = pkgs.fetchFromGitHub {
     owner = "pipex";
     repo = "astronvim";
-    rev = "54d5f9a9dd1f9fa09c9a9171f0a66aa927bac21d";
-    sha256 = "0n5v2mdkwcv38lnzydxcgbk9i97jw1imldvwqdsqdqpw045z4sk1";
+    rev = "98d678e9a56173e843c99fd31102e041e800b727";
+    sha256 = "1mdf92f8zswv401mcycjczf6yx9iq5v7g3s1cpnjrz21g142czsa";
   };
   # xdg.configFile."nvim/lua/user".source = ./astronvim;
 
