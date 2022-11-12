@@ -20,6 +20,7 @@
     pkgs.rnix-lsp
     pkgs.jq
     pkgs.unzip
+    pkgs."nodejs-16_x"
     # TODO: check system before installing this
     # pkgs.reattach-to-user-namespace
   ];
