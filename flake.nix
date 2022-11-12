@@ -13,7 +13,6 @@
   outputs = { self, nixpkgs, home-manager }:
     let
       mkSystem = import ./lib/mksystem.nix;
-
     in
     {
       nixosConfigurations.qemu-aarch64 = mkSystem "qemu-aarch64" {
