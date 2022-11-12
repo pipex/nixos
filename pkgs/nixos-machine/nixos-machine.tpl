@@ -235,7 +235,7 @@ start() {
 	if [ -z "$daemon" ]; then
 		echo "Password is required to setup bridge networking" >&2
 		sudo qemu-system-aarch64 -machine virt \
-			-cpu host -accel hvf -smp 4 -m 4096 \
+			-cpu host -accel hvf -smp 4 -m 8192 \
 			-drive "file=$img,format=qcow2,if=virtio,unit=0" \
 			-drive "if=pflash,format=raw,unit=0,file=${qemu}/share/qemu/edk2-aarch64-code.fd,readonly=on" \
 			-net nic,model=virtio -net "vmnet-bridged,ifname=$iface" \
