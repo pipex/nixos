@@ -30,14 +30,14 @@
   xdg.configFile."nvim".source = pkgs.fetchFromGitHub {
     owner = "AstroNvim";
     repo = "AstroNvim";
-    rev = "v2.6.3";
-    sha256 = "11dyfilk4xh9m7zwm7c951l28h2ixqzmqdn86rngv0kl6yp5jzsp";
+    rev = "v2.6.5";
+    sha256 = "0s094ssrkmfraym3bc77ahp3wym27vhjnda1mqffg9wn349kz0wl";
   };
   xdg.configFile."nvim/lua/user".source = pkgs.fetchFromGitHub {
     owner = "pipex";
     repo = "astronvim";
-    rev = "15f76bb8ccd3f06a77abc093512930dc39404995";
-    sha256 = "03r7m92z87s3g46c2vmdvsn63wpy0pnz1dgdnlbj0vfn4clwljk6";
+    rev = "690b0be55a9b2f666f31001e6e14243e7e532752";
+    sha256 = "1mh4hzz5hig7hzg3rbkfcm4mnhd5hipx8l17yc9h7zli9mzms6yg";
   };
   # xdg.configFile."nvim/lua/user".source = ./astronvim;
 
