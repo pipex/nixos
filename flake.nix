@@ -21,5 +21,11 @@
         user = "flalanne";
         hostname = "vesta";
       };
+      nixosConfigurations.intel-nuc = mkSystem "intel-nuc" {
+        inherit nixpkgs home-manager;
+        system = "x86_64-linux";
+        user = "flalanne";
+        hostname = "europa";
+      };
     };
 }
