@@ -21,7 +21,7 @@
         user = "flalanne";
         hostname = "vesta";
       };
-      nixosConfigurations.intel-nuc = mkSystem "intel-nuc" {
+      nixosConfigurations.qemu-intel = mkSystem "qemu-x86_64" {
         inherit nixpkgs home-manager;
         system = "x86_64-linux";
         user = "flalanne";

@@ -3,9 +3,10 @@
     ./shared.nix
   ];
 
-  # Interface is this on my M1
   networking.interfaces.enp0s1.useDHCP = true;
 
+  # Qemu
+  services.spice-vdagentd.enable = true;
   nixpkgs.config.allowUnfree = true;
   nixpkgs.config.allowUnsupportedSystem = true;
 }
